@@ -121,7 +121,7 @@ const GameScreen = ({ userNumber, onSetGuessRound }) => {
         <View style={styles.listContainer}>
           <FlatList
             data={guessPast}
-            keyExtractor={(item) => item}
+            keyExtractor={(item) => Math.random() + item}
             renderItem={rendrerGuessItem.bind(this, guessPast.length)}
             contentContainerStyle={styles.list}
           />
@@ -182,10 +182,10 @@ const styles = StyleSheet.create({
     marginVertical: Dimensions.get("window").height < 550 ? 8 : 20,
   },
   control: {
-    width:'80%',
+    width: "80%",
     flexDirection: "row",
-    alignItems:'center',
-    justifyContent:'space-around'
+    alignItems: "center",
+    justifyContent: "space-around",
   },
   btn: {
     width: "40%",

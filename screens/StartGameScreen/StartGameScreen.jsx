@@ -18,6 +18,7 @@ import NumberContainer from "../../components/NumberContainer/NumberContainer";
 import defaultStyles from "../../Constants/styles_default";
 import MainButton from "../../components/MainButton/MainButton";
 
+
 const StartGameScreen = ({ userSelectNumber }) => {
   const [enteredNumber, setEntredNumber] = useState("");
   const [confirm, setConfirm] = useState(false);
@@ -25,6 +26,8 @@ const StartGameScreen = ({ userSelectNumber }) => {
   const [buttonWidth, setButtonWidth] = useState(
     Dimensions.get("window").width / 4
   );
+
+  
 
   useEffect(() => {
     const calcButtonWidth = () => {
@@ -84,7 +87,7 @@ const StartGameScreen = ({ userSelectNumber }) => {
 
   return (
     <ScrollView>
-      <KeyboardAvoidingView behavior="padding" >
+      <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback
           onPress={() => {
             Keyboard.dismiss();
