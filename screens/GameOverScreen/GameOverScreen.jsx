@@ -1,31 +1,60 @@
-import React from "react";
-import { View, Button, Text, StyleSheet, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Button,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import defaultStyles from "../../Constants/styles_default";
 import Colors from "../../Constants/color";
 import MainButton from "../../components/MainButton/MainButton";
 
 const GameOverScreen = ({ guessCount, selectedNumber, onStartGame }) => {
+  const [availableDeviceWidth, setAvailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeight, setAvailableDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const changeLayout = () => {
+      setAvailableDeviceWidth(Dimensions.get("window").width);
+      setAvailableDeviceHeight(Dimensions.get("window").height);
+    };
+
+    Dimensions.addEventListener("change", changeLayout);
+    return () => {
+      Dimensions.removeEventListener("change", changeLayout);
+    };
+  });
+
   return (
-    <View style={styles.gameOver}>
-      <Text style={{ ...defaultStyles.bodyText, ...styles.detailGame }}>
-        بازی تمام شده است
-      </Text>
-      <View style={styles.imgContainer}>
-        <Image
-          style={styles.image}
-          source={require("../../assets/success.png")}
-          resizeMode="cover"
-        />
-      </View>
-      <View style={styles.txtContainer}>
+    <ScrollView style={{ flex: 1 }}>
+      <View style={styles.gameOver}>
         <Text style={{ ...defaultStyles.bodyText, ...styles.detailGame }}>
-          ما دنبال عدد <Text style={styles.highligth}>{selectedNumber}</Text>{" "}
-          بودیم که کامپیوتر در{" "}
-          <Text style={styles.highligth}>{guessCount}</Text> حرکت آن را حدس زد
+          بازی تمام شده است
         </Text>
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.image}
+            source={require("../../assets/success.png")}
+            resizeMode="cover"
+          />
+        </View>
+        <View style={styles.txtContainer}>
+          <Text style={{ ...defaultStyles.bodyText, ...styles.detailGame }}>
+            ما دنبال عدد <Text style={styles.highligth}>{selectedNumber}</Text>{" "}
+            بودیم که کامپیوتر در{" "}
+            <Text style={styles.highligth}>{guessCount}</Text> حرکت آن را حدس زد
+          </Text>
+        </View>
+        <MainButton onPress={onStartGame}>شروع بازی جدید</MainButton>
       </View>
-      <MainButton onPress={onStartGame}>شروع بازی جدید</MainButton>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -34,20 +63,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    padding: 10,
   },
   detailGame: {
     marginVertical: 5,
-    fontSize: 18,
+    fontSize: Dimensions.get("window").height > 550 ? 18 : 15,
     textAlign: "center",
   },
 
   imgContainer: {
-    width: 300,
-    height: 300,
-    borderRadius: 150,
+    width: Dimensions.get("window").width * 0.7,
+    height: Dimensions.get("window").width * 0.7,
+    borderRadius: (Dimensions.get("window").width * 0.7) / 2,
     borderWidth: 2,
     borderColor: "black",
-    marginVertical: 15,
+    marginVertical: Dimensions.get("window").height > 550 ? 15 : 5,
     overflow: "hidden",
   },
   image: {

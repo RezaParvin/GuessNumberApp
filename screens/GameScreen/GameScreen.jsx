@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   FlatList,
+  Dimensions,
 } from "react-native";
 import NumberContainer from "../../components/NumberContainer/NumberContainer";
 import Card from "../../components/Card/Card";
@@ -42,6 +43,23 @@ const GameScreen = ({ userNumber, onSetGuessRound }) => {
 
   const [computerGuess, setComputerGuess] = useState(initialRandom);
   const [guessPast, setGuessPast] = useState([initialRandom.toString()]);
+  const [availableDeviceWidth, setAvailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeigth, setAvailableDeviceHeigth] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const changeLayout = () => {
+      setAvailableDeviceWidth(Dimensions.get("window").width);
+      setAvailableDeviceHeigth(Dimensions.get("window").height);
+    };
+    Dimensions.addEventListener("change", changeLayout);
+    return () => {
+      Dimensions.removeEventListener("change", changeLayout);
+    };
+  });
 
   useEffect(() => {
     if (computerGuess === userNumber) {
@@ -75,6 +93,42 @@ const GameScreen = ({ userNumber, onSetGuessRound }) => {
     //setGuessRound((prevGuessRound) => prevGuessRound + 1);
     setGuessPast((guessPast) => [newRandom.toString(), ...guessPast]);
   };
+  if (availableDeviceHeigth < 500) {
+    return (
+      <View style={styles.gameScreen}>
+        <Text
+          style={{ ...defaultStyles.bodyText, ...styles.computerNumberTitle }}
+        >
+          کامپیوتر حدس زده
+        </Text>
+        <View style={styles.control}>
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("smaller");
+            }}
+          >
+            <Ionicons name="ios-remove" size={24} color="white" />
+          </MainButton>
+          <NumberContainer>{computerGuess}</NumberContainer>
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("greater");
+            }}
+          >
+            <Ionicons name="ios-add" size={24} color="white" />
+          </MainButton>
+        </View>
+        <View style={styles.listContainer}>
+          <FlatList
+            data={guessPast}
+            keyExtractor={(item) => item}
+            renderItem={rendrerGuessItem.bind(this, guessPast.length)}
+            contentContainerStyle={styles.list}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.gameScreen}>
@@ -101,11 +155,6 @@ const GameScreen = ({ userNumber, onSetGuessRound }) => {
         </MainButton>
       </Card>
       <View style={styles.listContainer}>
-        {/*<ScrollView contentContainerStyle={styles.list}>
-          {guessPast.map((guess, index) =>
-            rendrerGuessItem(guess, guessPast.length - index)
-          )}
-          </ScrollView>*/}
         <FlatList
           data={guessPast}
           keyExtractor={(item) => item}
@@ -124,20 +173,26 @@ const styles = StyleSheet.create({
   },
   computerNumberTitle: {
     fontSize: 18,
-    marginVertical: 10,
+    marginVertical: Dimensions.get("window").height < 550 ? 4 : 10,
   },
   btnHintContainer: {
     width: "90%",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginVertical: 20,
+    marginVertical: Dimensions.get("window").height < 550 ? 8 : 20,
+  },
+  control: {
+    width:'80%',
+    flexDirection: "row",
+    alignItems:'center',
+    justifyContent:'space-around'
   },
   btn: {
     width: "40%",
   },
   listContainer: {
     flex: 1,
-    width: "60%",
+    width: Dimensions.get("window").width > 350 ? "60%" : "85%",
   },
   list: {
     flexGrow: 1,
